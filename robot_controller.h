@@ -29,7 +29,7 @@ typedef struct
 } t_controller_state;
 
 
-extern t_controller_state s;
+extern volatile t_controller_state s;
 
 extern void robot_controller(void);
 
