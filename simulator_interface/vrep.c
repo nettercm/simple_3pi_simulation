@@ -303,12 +303,23 @@ float vrep_sim_line_sensor(handle)
 	int result;
 	u08 state;
 	float value=0;
+	float noise;
 	int i;
 
 	result = simxReadVisionSensor(clientID, handle, &state, &auxValues, &auxValuesCount, STREAMING_MODE); //returns 15 float values;  see documentation
 	if (result == 0)
 	{
 		value = auxValues[10]; //the value at index 10 represents the average intensity of the image, i.e. average of all pixels;  range:  0.00 ... 1.00
+
+		//ok let's add some noise
+		noise = (rand() % 100);		// 0   ... 100
+		noise = noise / 1000.0;		// 0.0 ... 0.1
+		noise = noise - 0.05;		// -0.05 ... +0.05
+		noise = noise * 2;			// amplify the noise
+		value = value + noise;
+		if (value > 1.0) value = 1.0;
+		if (value < 0.0) value = 0.0;
+
 		value = 1.0 - value;  //to mach how the 3pi works
 		/*
 		for (i = 0; i < 15; i++)
