@@ -196,9 +196,9 @@ void vrep_sim_step(void)
 
 void vrep_sim_outputs(void)
 {
-	//motors
-	simxSetJointTargetVelocity(clientID,left_motor,  (((float) m.m2)/1.83f)/5.19695f, STREAMING_MODE);			
-	simxSetJointTargetVelocity(clientID,right_motor, (((float) m.m1)/1.83f)/5.19695f, STREAMING_MODE);		
+	//here we map the target motor speed values as produced by the robot controller, into the corresponding values for the simulaterd motor
+	simxSetJointTargetVelocity(clientID,left_motor,  (((float) s.out.lm)/1.83f)/5.19695f, STREAMING_MODE);			
+	simxSetJointTargetVelocity(clientID,right_motor, (-((float) s.out.rm)/1.83f)/5.19695f, STREAMING_MODE);		
 }
 
 
@@ -309,6 +309,7 @@ float vrep_sim_line_sensor(handle)
 	if (result == 0)
 	{
 		value = auxValues[10]; //the value at index 10 represents the average intensity of the image, i.e. average of all pixels;  range:  0.00 ... 1.00
+		value = 1.0 - value;  //to mach how the 3pi works
 		/*
 		for (i = 0; i < 15; i++)
 		{
@@ -320,6 +321,7 @@ float vrep_sim_line_sensor(handle)
 	if (auxValues)simxReleaseBuffer((simxUChar*)auxValues);
 	if (auxValuesCount)simxReleaseBuffer((simxUChar*)auxValuesCount);
 
+	//printf("value=%f\n", value);
 	return value;
 }
 
@@ -334,7 +336,7 @@ void vrep_sim_inputs(void)
 	static int t_sim,t_sim_last=0;
 	static u32 t_real_now, t_real_last=0; 
 	static u32 t_m,t_m_last=0;
-	float value;
+	float value, avg, sum;
 
 	t_sim = simxGetLastCmdTime(clientID);
 	t_real_now = timeGetTime();
@@ -342,8 +344,37 @@ void vrep_sim_inputs(void)
 
 	vrep_sim_encoders(259.84781924773094164045499171293);
 
+	avg = 0;
+	sum = 1; //avoid divide by zero
 
-	value = vrep_sim_line_sensor(l_s_1);
+	value = (1000.0 * vrep_sim_line_sensor(l_s_1));
+	avg = avg + 0*value;
+	sum = sum + value;
+	s.in.l_s_1 = (u16)value;
+
+	value = (1000.0 * vrep_sim_line_sensor(l_s_2));
+	avg = avg + 1000*value;
+	sum = sum + value;
+	s.in.l_s_2 = (u16)value;
+
+	value = (1000.0 * vrep_sim_line_sensor(l_s_3));
+	avg = avg + 2000*value;
+	sum = sum + value;
+	s.in.l_s_3 = (u16)value;
+
+	value = (1000.0 * vrep_sim_line_sensor(l_s_4));
+	avg = avg + 3000*value;
+	sum = sum + value;
+	s.in.l_s_4 = (u16)value;
+
+	value = (1000.0 * vrep_sim_line_sensor(l_s_5));
+	avg = avg + 4000*value;
+	sum = sum + value;
+	s.in.l_s_5 = (u16)value;
+
+	s.in.line = (u16)(avg / sum);
+
+	printf("1,2,3,4,5,line = %d,%d,%d,%d,%d,  %d\n", s.in.l_s_1, s.in.l_s_2, s.in.l_s_3, s.in.l_s_4, s.in.l_s_5, s.in.line);
 }
 
 
@@ -359,6 +390,10 @@ void vrep_sim_get_handles(void)
 	simxGetObjectHandle(clientID, "left_motor", &left_motor, simx_opmode_oneshot_wait);
 	simxGetObjectHandle(clientID, "right_motor", &right_motor, simx_opmode_oneshot_wait);
 	simxGetObjectHandle(clientID, "l_s_1", &l_s_1, simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "l_s_2", &l_s_2, simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "l_s_3", &l_s_3, simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "l_s_4", &l_s_4, simx_opmode_oneshot_wait);
+	simxGetObjectHandle(clientID, "l_s_5", &l_s_5, simx_opmode_oneshot_wait);
 
 	simxGetObjectHandle(clientID, "robot", &robot, simx_opmode_oneshot_wait);
 
@@ -441,14 +476,14 @@ int main(int argc, char** argv)
 	memset(&m, 0, sizeof(m));
 	vrep_sim_init();
 
-	m.m1 = 10;
-	m.m2 = 10;
-
 
 	while (1)
 	{
 		vrep_sim_step();
 		vrep_sim_inputs();
+
+		robot_controller();
+
 		vrep_sim_outputs();
 
 		display_loops_per_second();
