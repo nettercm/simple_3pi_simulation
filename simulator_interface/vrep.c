@@ -131,7 +131,7 @@ void vrep_sim_step(void)
 
 	//now make sure the robot controller code knows what time it is
 	//simply synchronize the absulate time stamp that the robot controller works with, with simulator time
-	m.elapsed_milliseconds = t_sim;
+	s.elapsed_milliseconds = t_sim;
 
 	//let's get the robot's actual position, i.e. exact values
 	//this can be used in situations where we want to bypass the (simulated) wheel encoder odometry and use "ground truth" instead
@@ -197,8 +197,8 @@ void vrep_sim_step(void)
 void vrep_sim_outputs(void)
 {
 	//here we map the target motor speed values as produced by the robot controller, into the corresponding values for the simulaterd motor
-	simxSetJointTargetVelocity(clientID,left_motor,  (((float) s.out.lm)/1.83f)/5.19695f, STREAMING_MODE);			
-	simxSetJointTargetVelocity(clientID,right_motor, (-((float) s.out.rm)/1.83f)/5.19695f, STREAMING_MODE);		
+	simxSetJointTargetVelocity(clientID,left_motor,  (((float) s.out.lm)/4.0f), STREAMING_MODE);			
+	simxSetJointTargetVelocity(clientID,right_motor, (-((float) s.out.rm)/4.0f), STREAMING_MODE);		
 }
 
 
@@ -385,7 +385,7 @@ void vrep_sim_inputs(void)
 
 	s.in.line = (u16)(avg / sum);
 
-	printf("1,2,3,4,5,line = %d,%d,%d,%d,%d,  %d\n", s.in.l_s_1, s.in.l_s_2, s.in.l_s_3, s.in.l_s_4, s.in.l_s_5, s.in.line);
+	//printf("1,2,3,4,5,line = %d,%d,%d,%d,%d,  %d\n", s.in.l_s_1, s.in.l_s_2, s.in.l_s_3, s.in.l_s_4, s.in.l_s_5, s.in.line);
 }
 
 
