@@ -7,63 +7,27 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\simulator_interface">
-      <UniqueIdentifier>{bfc33f9e-1137-48ab-904a-dd24af9948c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\simulator_interface\vrep_remote_api">
-      <UniqueIdentifier>{3da9de5f-21b0-4114-8480-79d337c2dfc0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="simulator_interface\vrep_remote_api\extApi.c">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClCompile>
-    <ClCompile Include="simulator_interface\vrep_remote_api\extApiCustom.c">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClCompile>
-    <ClCompile Include="simulator_interface\vrep_remote_api\extApiPlatform.c">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClCompile>
-    <ClCompile Include="simulator_interface\vrep.c">
-      <Filter>Source Files\simulator_interface</Filter>
-    </ClCompile>
+    <ClInclude Include="robot_controller.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="__vm\.simple_3pi_simulation.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="robot_controller.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="simulator_interface\vrep_remote_api\extApi.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\extApiCustom.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\extApiCustomConst.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\extApiInternal.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\extApiPlatform.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\v_repConst.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\v_repLib.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator_interface\vrep_remote_api\v_repTypes.h">
-      <Filter>Source Files\simulator_interface\vrep_remote_api</Filter>
-    </ClInclude>
-    <ClInclude Include="robot_controller.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+    <None Include="simple_3pi_simulation.ino" />
   </ItemGroup>
 </Project>
