@@ -249,19 +249,26 @@ void loop()
 
 void loop(void)
 {
-    s.in.line = robot.readLine(sensors, IR_EMITTERS_ON);
-    s.in.l_s_1 = sensors[0];
-    s.in.l_s_2 = sensors[1];
-    s.in.l_s_3 = sensors[2];
-    s.in.l_s_4 = sensors[3];
-    s.in.l_s_5 = sensors[4];
+	static u32 t = 0;
 
-    robot_controller();
+	if (t == 0) t = millis(); //initialize
 
-    //s.out.lm = s.out.lm / 1.5;
-    //s.out.rm = s.out.rm / 1.5;
+	if (millis() - t >= 10)  //run the control loop at 100Hz
+	{
+		t = millis();
+		s.elapsed_milliseconds = t;
 
-    OrangutanMotors::setSpeeds(s.out.lm, s.out.rm);
+		s.in.line = robot.readLine(sensors, IR_EMITTERS_ON);
+		s.in.l_s_1 = sensors[0];
+		s.in.l_s_2 = sensors[1];
+		s.in.l_s_3 = sensors[2];
+		s.in.l_s_4 = sensors[3];
+		s.in.l_s_5 = sensors[4];
+
+		robot_controller();
+
+		OrangutanMotors::setSpeeds(s.out.lm, s.out.rm);
+	}
 }
 
 #endif
