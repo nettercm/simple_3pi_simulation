@@ -111,7 +111,74 @@ void vrep_sim_step(void)
 	static int t_sim,t_sim_last=0;
 	static int use_actual_position=1;
 	static int inter_step_delay=0;
+	static int single_step = 0;
 	int pingTime;
+	int c=0;
+
+	if (single_step)
+	{
+		while (!_kbhit())
+		{
+			Sleep(1);
+		}
+		c = _getch();
+	}
+
+	if (_kbhit()) c = _getch();
+
+	if(c)
+	{
+		if (c == 0x1b)
+		{
+			simxStopSimulation(clientID, simx_opmode_oneshot_wait);
+			simxFinish(clientID);
+			exit(0);
+		}
+
+		if (c == 'm')
+		{
+			result = simxSetModelProperty(clientID, robot, 0, simx_opmode_oneshot_wait);
+			printf("Robot is NOT movale now!\n");
+		}
+
+		if (c == 'M')
+		{
+			result = simxSetModelProperty(clientID, robot, sim_modelproperty_not_dynamic | sim_modelproperty_not_respondable, simx_opmode_oneshot_wait);
+			printf("Robot is movable now!\n");
+		}
+
+		if (c == 'x')
+		{
+			//s.inputs.x =	sim_state.robot_position[0]*1000;
+			//s.inputs.y =	sim_state.robot_position[1]*1000;
+			//.inputs.theta= sim_state.robot_orientation[2];
+		}
+
+		if (c == 'X')
+		{
+			use_actual_position = !use_actual_position;
+		}
+
+		if (c == ' ')
+		{
+			inter_step_delay = !inter_step_delay;
+		}
+
+		if (c == 's')
+		{
+			single_step = !single_step;
+		}
+	}
+
+	if (use_actual_position)
+	{
+		//s.inputs.x =	sim_state.robot_position[0]*1000;
+		//s.inputs.y =	sim_state.robot_position[1]*1000;
+		//s.inputs.theta= sim_state.robot_orientation[2];
+	}
+
+	if (inter_step_delay) Sleep(300);
+
 
 	//advance the simulation by one step
 	result = simxSynchronousTrigger(clientID);
@@ -137,58 +204,6 @@ void vrep_sim_step(void)
 	//this can be used in situations where we want to bypass the (simulated) wheel encoder odometry and use "ground truth" instead
 	simxGetObjectPosition(clientID,robot,-1,sim_state.robot_position,STREAMING_MODE);
 	simxGetObjectOrientation(clientID,robot,-1,sim_state.robot_orientation,STREAMING_MODE);
-
-
-	if(_kbhit())
-	{
-		int c;
-		c = _getch();
-
-		if(c==0x1b)
-		{
-			simxStopSimulation(clientID,simx_opmode_oneshot_wait);
-			simxFinish(clientID);
-			exit(0);
-		}
-
-		if(c=='m')
-		{
-			result = simxSetModelProperty(clientID,robot,0,simx_opmode_oneshot_wait);
-			printf("Robot is NOT movale now!\n");
-		}
-
-		if(c=='M')
-		{
-			result = simxSetModelProperty(clientID, robot, sim_modelproperty_not_dynamic | sim_modelproperty_not_respondable, simx_opmode_oneshot_wait);
-			printf("Robot is movable now!\n");
-		}
-
-		if(c=='x')
-		{
-			//s.inputs.x =	sim_state.robot_position[0]*1000;
-			//s.inputs.y =	sim_state.robot_position[1]*1000;
-			//.inputs.theta= sim_state.robot_orientation[2];
-		}
-
-		if(c=='X')
-		{
-			use_actual_position = !use_actual_position;
-		}
-
-		if(c==' ')
-		{
-			inter_step_delay = !inter_step_delay;
-		}
-	}
-
-	if(use_actual_position)
-	{
-		//s.inputs.x =	sim_state.robot_position[0]*1000;
-		//s.inputs.y =	sim_state.robot_position[1]*1000;
-		//s.inputs.theta= sim_state.robot_orientation[2];
-	}
-
-	if(inter_step_delay) Sleep(200);
 }
 
 
@@ -197,8 +212,8 @@ void vrep_sim_step(void)
 void vrep_sim_outputs(void)
 {
 	//here we map the target motor speed values as produced by the robot controller, into the corresponding values for the simulaterd motor
-	simxSetJointTargetVelocity(clientID,left_motor,  (((float) s.out.lm)/4.0f), STREAMING_MODE);			
-	simxSetJointTargetVelocity(clientID,right_motor, (-((float) s.out.rm)/4.0f), STREAMING_MODE);		
+	simxSetJointTargetVelocity(clientID,left_motor,  (((float) s.out.lm)/3.85f), STREAMING_MODE);			
+	simxSetJointTargetVelocity(clientID,right_motor, (-((float) s.out.rm)/3.85f), STREAMING_MODE);		
 }
 
 
@@ -315,8 +330,8 @@ float vrep_sim_line_sensor(handle)
 		noise = (rand() % 100);		// 0   ... 100
 		noise = noise / 1000.0;		// 0.0 ... 0.1
 		noise = noise - 0.05;		// -0.05 ... +0.05
-		noise = noise * 2;			// amplify the noise
-		value = value + noise;
+		noise = noise * 1;			// amplify the noise
+		//value = value + noise;
 		if (value > 1.0) value = 1.0;
 		if (value < 0.0) value = 0.0;
 
