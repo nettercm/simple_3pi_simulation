@@ -330,8 +330,8 @@ float vrep_sim_line_sensor(handle)
 		noise = (rand() % 100);		// 0   ... 100
 		noise = noise / 1000.0;		// 0.0 ... 0.1
 		noise = noise - 0.05;		// -0.05 ... +0.05
-		noise = noise * 1;			// amplify the noise
-		//value = value + noise;
+		noise = noise * 0.5;			// amplify the noise
+		value = value + noise;
 		if (value > 1.0) value = 1.0;
 		if (value < 0.0) value = 0.0;
 
