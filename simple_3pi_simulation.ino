@@ -253,17 +253,17 @@ void loop(void)
 
 	if (t == 0) t = millis(); //initialize
 
+	s.in.line = robot.readLine(sensors, IR_EMITTERS_ON);
+	s.in.l_s_1 = sensors[0];
+	s.in.l_s_2 = sensors[1];
+	s.in.l_s_3 = sensors[2];
+	s.in.l_s_4 = sensors[3];
+	s.in.l_s_5 = sensors[4];
+
 	if (millis() - t >= 10)  //run the control loop at 100Hz
 	{
 		t = millis();
 		s.elapsed_milliseconds = t;
-
-		s.in.line = robot.readLine(sensors, IR_EMITTERS_ON);
-		s.in.l_s_1 = sensors[0];
-		s.in.l_s_2 = sensors[1];
-		s.in.l_s_3 = sensors[2];
-		s.in.l_s_4 = sensors[3];
-		s.in.l_s_5 = sensors[4];
 
 		robot_controller();
 
